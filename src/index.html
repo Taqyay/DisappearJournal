@@ -1,17 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Vanilla JavaScript App</title>
+	<title>Disappearing Text Web App</title>
+	<style>
+		body {
+            
+            background-image: url("C:\Users\Abdul Quddus\Desktop\FH Tests\journal\allpaper.jpg");
+            background-size: cover;
+             background-repeat: no-repeat;
+            background-position: center;
+
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#text-input {
+			width: 90%;
+			height: 300px;
+			margin-top: 33%;
+			margin-bottom: auto;
+			display: block;
+			resize: none;
+			font-size: 16px;
+			line-height: 1.5;
+			padding: 10px;
+			border: 1px solid #ccc;
+			box-sizing: border-box;
+		}
+	</style>
 </head>
+<body >
+	<label for="text-input"> Write to let go</label>
+	<textarea id="text-input"></textarea>
 
-<body>
-  <main>
-    <h1>Vanilla JavaScript App</h1>
-  </main>
+	<script>
+		// Get the text input element
+		const textInput = document.getElementById('text-input');
+		// Initialize the timer and the text buffer
+		let timer = null;
+		let textBuffer = '';
+		let delay = 5000;
+		
+		// Function to start the timer
+		function startTimer() {
+	// Clear any previous timer
+	clearTimeout(timer);
+	// Start a new timer to remove one character at a time after a delay
+	timer = setTimeout(() => {
+		// Remove the first character from the text buffer
+		textBuffer = textBuffer.substring(1);
+		// Get the height of the text input before updating its value
+		const textHeight = textInput.scrollHeight;
+		// Update the value of the text input with the new text buffer
+		textInput.value = textBuffer;
+		// Check if all characters have been removed
+		if (textBuffer.length === 0) {
+			// Clear the timer and reset the text buffer
+			clearTimeout(timer);
+			timer = null;
+			textInput.value = '';
+			textBuffer = '';
+		} else {
+			// Set the delay for the next character to be removed
+			delay = 500;
+			// Get the new height of the text input after updating its value
+			const newTextHeight = textInput.scrollHeight;
+			// If the new height is greater than the old height, move the remaining text up
+			if (newTextHeight > textHeight) {
+				const scrollDistance = newTextHeight - textHeight;
+				textInput.scrollTop -= scrollDistance;
+			}
+			// Start the timer again
+			startTimer();
+				}
+			}, delay);
+		}
+
+		// Add an event listener to the text input element
+		textInput.addEventListener('input', (event) => {
+			// Get the current value of the text input
+			const textValue = event.target.value;
+			// Add the new character to the text buffer
+			textBuffer += textValue[textValue.length - 1];
+			// Start the timer if it's not already running
+			if (!timer) {
+				delay = textBuffer.length === 1 ? 5000 : 500;
+				startTimer();
+			}
+		});
+	</script>
 </body>
-
 </html>
